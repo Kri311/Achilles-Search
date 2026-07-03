@@ -29,6 +29,37 @@
 
 #include <stdio.h>
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+/* ---- Console Pause Detection --------------------------------------------
+ * PROBLEM:
+ *   When you double-click an .exe in Windows Explorer, the OS creates a
+ *   temporary console window. The instant main() returns, that window is
+ *   destroyed — you see a flash and nothing else.
+ *
+ *   But when you run from cmd.exe or PowerShell, the console is THEIR
+ *   window. It persists after our process exits. Adding "Press Enter..."
+ *   in that case is annoying.
+ *
+ * SOLUTION:
+ *   GetConsoleProcessList() returns how many processes are attached to
+ *   our console. If the count is 1, WE created the console (double-click).
+ *   If count >= 2, we inherited it from a parent shell (cmd/PowerShell).
+ *
+ *   We only pause when count == 1.
+ *
+ * WHY NOT system("pause")?
+ *   system() spawns an entire child process (cmd.exe /c pause). That's
+ *   heavyweight and introduces a security surface. A simple getchar()
+ *   achieves the same thing with zero overhead.
+ * ------------------------------------------------------------------------- */
+static bool should_pause_on_exit(void) {
+    DWORD process_list[2];
+    DWORD count = GetConsoleProcessList(process_list, 2);
+    return (count <= 1);
+}
+
 /* ---- Banner ------------------------------------------------------------- */
 /* A visual separator that makes it immediately obvious the application
  * has started. Includes version and build info for debugging.
@@ -86,6 +117,12 @@ int main(void) {
     /* 4. Shutdown (reverse order of initialization) */
     LOG_INFO("%s shutting down...", ACH_APP_NAME);
     logger_shutdown();
+
+    /* 5. Pause if launched by double-click (so user can read the output) */
+    if (should_pause_on_exit()) {
+        printf("\nPress Enter to exit...");
+        getchar();
+    }
 
     return 0;
 }
