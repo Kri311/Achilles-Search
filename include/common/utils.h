@@ -40,4 +40,17 @@
  * ------------------------------------------------------------------------- */
 AchErrorCode utils_get_timestamp(char *buffer, usize buffer_len);
 
+/* ---- Console Utilities --------------------------------------------------
+ * Detects if the current process console window was spawned specifically
+ * for this program (e.g., launched from Windows Explorer by double-clicking).
+ *
+ * If it returns true, the console will close the instant our main function
+ * returns. We should prompt the user (e.g. "Press Enter to exit...") to
+ * keep the window open so they can read the output.
+ *
+ * Returns:
+ *   true if the console should be paused before exit.
+ * ------------------------------------------------------------------------- */
+bool utils_should_pause_on_exit(void);
+
 #endif /* ACH_UTILS_H */

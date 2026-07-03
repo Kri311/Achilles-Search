@@ -10,6 +10,9 @@
 #include <stdio.h>
 #include <time.h>
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 /* --------------------------------------------------------------------------
  * utils_get_timestamp
  * --------------------------------------------------------------------------
@@ -51,4 +54,10 @@ AchErrorCode utils_get_timestamp(char *buffer, usize buffer_len) {
              local_time.tm_sec);
 
     return ACH_SUCCESS;
+}
+
+bool utils_should_pause_on_exit(void) {
+    DWORD process_list[2];
+    DWORD count = GetConsoleProcessList(process_list, 2);
+    return (count <= 1);
 }

@@ -39,12 +39,20 @@ set(ACHILLES_SOURCES
     src/main.c
     src/common/logger.c
     src/common/utils.c
+    src/data/vector.c
+    src/data/hashmap.c
+    src/core/scanner.c
+    src/core/index.c
+    src/storage/database.c
+    src/core/search.c
+    src/core/content_index.c
+    src/core/monitor.c
 )
 
 # ---------------------------------------------------------------------------
 # Executable Target
 # ---------------------------------------------------------------------------
-add_executable(${PROJECT_NAME} ${ACHILLES_SOURCES})
+add_executable(${PROJECT_NAME} WIN32 ${ACHILLES_SOURCES})
 
 # ---------------------------------------------------------------------------
 # Include Directories
@@ -98,8 +106,147 @@ endif()
 # ---------------------------------------------------------------------------
 # Platform Libraries
 # ---------------------------------------------------------------------------
-# We'll add Win32 libraries here as needed in future phases.
-# For now, the C runtime and kernel32 (linked implicitly) are sufficient.
+target_link_libraries(${PROJECT_NAME} PRIVATE comctl32 ole32 shell32)
+
+# ---------------------------------------------------------------------------
+# Test Targets
+# ---------------------------------------------------------------------------
+# Each test is a separate executable that links the library sources it needs.
+# Tests do NOT link main.c (they have their own main function).
+
+# Shared library sources (everything except main.c)
+set(ACHILLES_LIB_SOURCES
+    src/common/logger.c
+    src/common/utils.c
+    src/data/vector.c
+    src/data/hashmap.c
+    src/core/scanner.c
+    src/core/index.c
+    src/storage/database.c
+    src/core/search.c
+    src/core/content_index.c
+    src/core/monitor.c
+)
+
+# Vector tests
+add_executable(test_vector
+    tests/test_vector.c
+    ${ACHILLES_LIB_SOURCES}
+)
+target_include_directories(test_vector PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(test_vector PRIVATE
+    UNICODE
+    _UNICODE
+    _CRT_SECURE_NO_WARNINGS
+    ACH_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    ACH_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+)
+
+# Scanner tests
+add_executable(test_scanner
+    tests/test_scanner.c
+    ${ACHILLES_LIB_SOURCES}
+)
+target_include_directories(test_scanner PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(test_scanner PRIVATE
+    UNICODE
+    _UNICODE
+    _CRT_SECURE_NO_WARNINGS
+    ACH_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    ACH_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+)
+
+# Hash Map tests
+add_executable(test_hashmap
+    tests/test_hashmap.c
+    ${ACHILLES_LIB_SOURCES}
+)
+target_include_directories(test_hashmap PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(test_hashmap PRIVATE
+    UNICODE
+    _UNICODE
+    _CRT_SECURE_NO_WARNINGS
+    ACH_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    ACH_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+)
+
+# Index tests
+add_executable(test_index
+    tests/test_index.c
+    ${ACHILLES_LIB_SOURCES}
+)
+target_include_directories(test_index PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(test_index PRIVATE
+    UNICODE
+    _UNICODE
+    _CRT_SECURE_NO_WARNINGS
+    ACH_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    ACH_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+)
+
+# Database tests
+add_executable(test_database
+    tests/test_database.c
+    ${ACHILLES_LIB_SOURCES}
+)
+target_include_directories(test_database PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(test_database PRIVATE
+    UNICODE
+    _UNICODE
+    _CRT_SECURE_NO_WARNINGS
+    ACH_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    ACH_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+)
+
+# Search Engine tests
+add_executable(test_search
+    tests/test_search.c
+    ${ACHILLES_LIB_SOURCES}
+)
+target_include_directories(test_search PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(test_search PRIVATE
+    UNICODE
+    _UNICODE
+    _CRT_SECURE_NO_WARNINGS
+    ACH_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    ACH_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+)
+
+# Content Index tests
+add_executable(test_content
+    tests/test_content.c
+    ${ACHILLES_LIB_SOURCES}
+)
+target_include_directories(test_content PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(test_content PRIVATE
+    UNICODE
+    _UNICODE
+    _CRT_SECURE_NO_WARNINGS
+    ACH_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    ACH_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+)
+
+# Filesystem Monitor tests
+add_executable(test_monitor
+    tests/test_monitor.c
+    ${ACHILLES_LIB_SOURCES}
+)
+target_include_directories(test_monitor PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(test_monitor PRIVATE
+    UNICODE
+    _UNICODE
+    _CRT_SECURE_NO_WARNINGS
+    ACH_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    ACH_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+)
 
 # ---------------------------------------------------------------------------
 # Build Info
