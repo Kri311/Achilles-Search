@@ -117,7 +117,7 @@ static inline const char* logger_level_to_string(LogLevel level) {
         case LOG_LEVEL_ERROR:   return "ERROR";
         case LOG_LEVEL_FATAL:   return "FATAL";
         case LOG_LEVEL_NONE:    return "NONE ";
-        default:                return "?????";
+        default:                return "";
     }
 }
 

@@ -5,9 +5,9 @@
  *
  * WHY THIS FILE EXISTS:
  *   C has no exceptions. Every function communicates success or failure
- *   through its return value. The question is: what type?
+ *   through its return value. The question is: what type
  *
- *   Option 1: Return int (-1 on failure) — Fragile. What does -3 mean?
+ *   Option 1: Return int (-1 on failure) — Fragile. What does -3 mean
  *   Option 2: Return bool — No info about WHAT failed.
  *   Option 3: Return a named enum — Self-documenting. IDE-friendly.
  *             The caller sees ACH_ERROR_FILE_NOT_FOUND, not -17.

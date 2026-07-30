@@ -51,7 +51,7 @@
 
 /* ---- Path Limits --------------------------------------------------------
  * Windows MAX_PATH is 260 characters, but long path support (Win10 1607+)
- * allows up to ~32,767 characters with the \\?\ prefix.
+ * allows up to ~32,767 characters with the \\\ prefix.
  *
  * We use 1024 as a practical limit for internal buffers. Paths exceeding
  * this are still handled via dynamic allocation in the scanner.

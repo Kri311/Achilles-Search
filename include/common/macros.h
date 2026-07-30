@@ -34,7 +34,7 @@
  *
  * CRITICAL: This ONLY works on actual arrays, NOT pointers.
  *   int arr[10];       ACH_ARRAY_LENGTH(arr)  -> 10  (correct)
- *   int *p = arr;      ACH_ARRAY_LENGTH(p)    -> ??  (WRONG! gives sizeof(ptr)/sizeof(int))
+ *   int *p = arr;      ACH_ARRAY_LENGTH(p)    ->   (WRONG! gives sizeof(ptr)/sizeof(int))
  *
  * There is no way in standard C to make this fail at compile time for
  * pointers (C++ can do it with templates). Be disciplined about usage.
@@ -42,8 +42,8 @@
 #define ACH_ARRAY_LENGTH(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 /* ---- Min / Max ----------------------------------------------------------
- * PROBLEM with naive #define MIN(a,b) ((a) < (b) ? (a) : (b)):
- *   MIN(x++, y) expands to ((x++) < (y) ? (x++) : (y))
+ * PROBLEM with naive #define MIN(a,b) ((a) < (b)  (a) : (b)):
+ *   MIN(x++, y) expands to ((x++) < (y)  (x++) : (y))
  *   x gets incremented TWICE if x < y.
  *
  * SOLUTION: Use statement expressions (GCC/Clang) or just document the
@@ -55,8 +55,8 @@
  *   int b = compute_b();
  *   int result = ACH_MIN(a, b);  // safe: no side effects
  * ------------------------------------------------------------------------- */
-#define ACH_MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define ACH_MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define ACH_MIN(a, b) (((a) < (b))  (a) : (b))
+#define ACH_MAX(a, b) (((a) > (b))  (a) : (b))
 
 /* ---- Clamping ----------------------------------------------------------- */
 #define ACH_CLAMP(val, lo, hi) (ACH_MIN(ACH_MAX((val), (lo)), (hi)))
