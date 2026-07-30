@@ -1,8 +1,5 @@
-# =============================================================================
 # Achilles-Search - CMake Build Configuration
-# =============================================================================
 # Minimum CMake version: 3.20 (for C17 support and modern features)
-# =============================================================================
 cmake_minimum_required(VERSION 3.20)
 
 project(AchillesSearch
@@ -11,26 +8,20 @@ project(AchillesSearch
     LANGUAGES C
 )
 
-# ---------------------------------------------------------------------------
 # C Standard Configuration
-# ---------------------------------------------------------------------------
 # C17 is our target standard. We disable extensions to ensure strict
 # conformance and portability (no GNU extensions, no MSVC extensions).
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-# ---------------------------------------------------------------------------
 # Output Directories
-# ---------------------------------------------------------------------------
 # Place all build artifacts in predictable locations under build/.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# ---------------------------------------------------------------------------
 # Source Files
-# ---------------------------------------------------------------------------
 # We explicitly list every source file rather than using GLOB.
 # Rationale: GLOB doesn't re-run CMake when new files are added, leading to
 # mysterious "undefined reference" errors. Explicit listing is the
@@ -49,14 +40,10 @@ set(ACHILLES_SOURCES
     src/core/monitor.c
 )
 
-# ---------------------------------------------------------------------------
 # Executable Target
-# ---------------------------------------------------------------------------
 add_executable(${PROJECT_NAME} WIN32 ${ACHILLES_SOURCES})
 
-# ---------------------------------------------------------------------------
 # Include Directories
-# ---------------------------------------------------------------------------
 # PUBLIC: propagated to anything that links against this target.
 # We use the include/ directory as our public header root, so all includes
 # look like: #include "common/logger.h" — clean and unambiguous.
@@ -64,9 +51,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC ${CMAKE_SOURCE_DIR}/include
 )
 
-# ---------------------------------------------------------------------------
 # Compile Definitions
-# ---------------------------------------------------------------------------
 # UNICODE / _UNICODE: Use wide-char versions of Win32 APIs by default.
 # Windows paths can contain non-ASCII characters (e.g., Japanese, Cyrillic),
 # so we MUST use the wide-char API surface (CreateFileW, FindFirstFileW, etc.)
@@ -83,9 +68,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
 )
 
-# ---------------------------------------------------------------------------
 # Compiler Flags (MSVC-specific)
-# ---------------------------------------------------------------------------
 # /W4: Warning level 4 — catches subtle bugs (uninitialized variables,
 #      unreachable code, signed/unsigned mismatches, etc.)
 # /WX: Warnings as errors in Release — forces clean code before shipping.
@@ -103,14 +86,10 @@ if(MSVC)
     )
 endif()
 
-# ---------------------------------------------------------------------------
 # Platform Libraries
-# ---------------------------------------------------------------------------
 target_link_libraries(${PROJECT_NAME} PRIVATE comctl32 ole32 shell32)
 
-# ---------------------------------------------------------------------------
 # Test Targets
-# ---------------------------------------------------------------------------
 # Each test is a separate executable that links the library sources it needs.
 # Tests do NOT link main.c (they have their own main function).
 
@@ -248,11 +227,32 @@ target_compile_definitions(test_monitor PRIVATE
     ACH_VERSION_PATCH=${PROJECT_VERSION_PATCH}
 )
 
-# ---------------------------------------------------------------------------
 # Build Info
-# ---------------------------------------------------------------------------
 message(STATUS "=== Achilles Search Engine ===")
 message(STATUS "Version:    ${PROJECT_VERSION}")
 message(STATUS "C Standard: C${CMAKE_C_STANDARD}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Compiler:   ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}")
+
+# Packaging (CPack) Configuration
+set(CPACK_PACKAGE_NAME "AchillesSearch")
+set(CPACK_PACKAGE_VENDOR "Achilles Team")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Achilles Search Engine - Blazing-fast desktop search tool")
+set(CPACK_GENERATOR "ZIP;NSIS")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "AchillesSearch")
+
+# NSIS Specific Configuration
+set(CPACK_NSIS_MUI_FINISHPAGE_RUN "bin\\\\AchillesSearch.exe")
+set(CPACK_NSIS_MODIFY_PATH OFF)
+set(CPACK_NSIS_CREATE_ICONS_EXTRA "
+  CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Achilles Search.lnk\\\" \\\"$INSTDIR\\\\bin\\\\AchillesSearch.exe\\\"
+")
+set(CPACK_NSIS_DELETE_ICONS_EXTRA "
+  Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Achilles Search.lnk\\\"
+")
+
+install(TARGETS AchillesSearch DESTINATION bin)
+install(FILES docs/phase11_release.md DESTINATION docs)
+
+include(CPack)
