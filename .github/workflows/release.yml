@@ -23,7 +23,7 @@ jobs:
     - name: Build
       run: cmake --build build --config Release
 
-    - name: Run CPack (Generate ZIP and NSIS Installer)
+    - name: Run CPack (Generate ZIP)
       working-directory: build
       run: cpack -C Release
 
@@ -32,7 +32,6 @@ jobs:
       with:
         files: |
           build/AchillesSearch-*-win64.zip
-          build/AchillesSearch-*-win64.exe
           build/bin/Release/AchillesSearch.exe
         draft: false
         prerelease: false

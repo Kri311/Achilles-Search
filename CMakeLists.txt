@@ -239,18 +239,8 @@ set(CPACK_PACKAGE_NAME "AchillesSearch")
 set(CPACK_PACKAGE_VENDOR "Achilles Team")
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Achilles Search Engine - Blazing-fast desktop search tool")
-set(CPACK_GENERATOR "ZIP;NSIS")
+set(CPACK_GENERATOR "ZIP")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "AchillesSearch")
-
-# NSIS Specific Configuration
-set(CPACK_NSIS_MUI_FINISHPAGE_RUN "bin\\\\AchillesSearch.exe")
-set(CPACK_NSIS_MODIFY_PATH OFF)
-set(CPACK_NSIS_CREATE_ICONS_EXTRA "
-  CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Achilles Search.lnk\\\" \\\"$INSTDIR\\\\bin\\\\AchillesSearch.exe\\\"
-")
-set(CPACK_NSIS_DELETE_ICONS_EXTRA "
-  Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Achilles Search.lnk\\\"
-")
 
 install(TARGETS AchillesSearch DESTINATION bin)
 install(FILES docs/phase11_release.md DESTINATION docs)
