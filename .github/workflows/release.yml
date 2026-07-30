@@ -33,6 +33,7 @@ jobs:
         files: |
           build/AchillesSearch-*-win64.zip
           build/AchillesSearch-*-win64.exe
+          build/bin/Release/AchillesSearch.exe
         draft: false
         prerelease: false
         generate_release_notes: true
