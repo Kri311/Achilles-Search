@@ -47,9 +47,15 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #define ID_POPUP_OPEN_LOCATION 2001
 #define ID_POPUP_COPY_PATH     2002
 
+/* Tray Menu/Icon IDs */
+#define IDI_TRAY_ICON          101
+#define ID_TRAY_SHOW           3001
+#define ID_TRAY_EXIT           3002
+
 /* Custom User Messages */
 #define WM_USER_INDEX_PROGRESS (WM_USER + 1)
 #define WM_USER_INDEX_COMPLETE (WM_USER + 2)
+#define WM_USER_TRAY_ICON      (WM_USER + 3)
 
 /* ---- Application State Struct -------------------------------------------- */
 typedef struct AppState {
@@ -114,6 +120,27 @@ static void copy_to_clipboard(HWND hwnd_owner, const wchar_t *text) {
             GlobalFree(hmem);
         }
     }
+}
+
+/* ---- Helper: Tray Notifications ------------------------------------------ */
+static void add_tray_icon(HWND hwnd) {
+    NOTIFYICONDATAW nid = {0};
+    nid.cbSize = sizeof(NOTIFYICONDATAW);
+    nid.hWnd = hwnd;
+    nid.uID = IDI_TRAY_ICON;
+    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+    nid.uCallbackMessage = WM_USER_TRAY_ICON;
+    nid.hIcon = LoadIconW(NULL, IDI_APPLICATION);
+    wcscpy_s(nid.szTip, 128, L"Achilles Search Engine (Alt+Shift+Space)");
+    Shell_NotifyIconW(NIM_ADD, &nid);
+}
+
+static void remove_tray_icon(HWND hwnd) {
+    NOTIFYICONDATAW nid = {0};
+    nid.cbSize = sizeof(NOTIFYICONDATAW);
+    nid.hWnd = hwnd;
+    nid.uID = IDI_TRAY_ICON;
+    Shell_NotifyIconW(NIM_DELETE, &nid);
 }
 
 /* ---- Worker Thread: Background Indexer ---------------------------------- */
@@ -208,7 +235,7 @@ static void populate_listview(AppState *state) {
         lvi.pszText = name;
         ListView_InsertItem(state->hwnd_results_list, &lvi);
 
-        ListView_SetItemText(state->hwnd_results_list, i, 1, res->is_directory ? L"Directory" : L"File");
+        ListView_SetItemText(state->hwnd_results_list, i, 1, res->is_directory  L"Directory" : L"File");
         ListView_SetItemText(state->hwnd_results_list, i, 2, path);
     }
 
@@ -268,6 +295,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             state->last_context_item = -1;
 
             SetWindowLongPtrW(hwnd, GWLP_USERDATA, (LONG_PTR)state);
+
+            RegisterHotKey(hwnd, 1, MOD_ALT | MOD_SHIFT, VK_SPACE);
+            add_tray_icon(hwnd);
 
             /* Create child windows */
             state->hwnd_dir_edit = CreateWindowExW(
@@ -358,7 +388,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             int control_id = LOWORD(wParam);
             int notification = HIWORD(wParam);
 
-            if (control_id == ID_POPUP_OPEN_LOCATION) {
+            if (control_id == ID_TRAY_SHOW) {
+                ShowWindow(hwnd, SW_SHOW);
+                ShowWindow(hwnd, SW_RESTORE);
+                SetForegroundWindow(hwnd);
+                SetFocus(state->hwnd_search_edit);
+            }
+            else if (control_id == ID_TRAY_EXIT) {
+                DestroyWindow(hwnd);
+            }
+            else if (control_id == ID_POPUP_OPEN_LOCATION) {
                 int item = state->last_context_item;
                 if (item >= 0 && item < (int)search_results_count(&state->search_results)) {
                     const SearchResult *res = search_results_get(&state->search_results, item);
@@ -453,31 +492,58 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
         case WM_NOTIFY: {
             LPNMHDR nmhdr = (LPNMHDR)lParam;
-            if (nmhdr->hwndFrom == state->hwnd_results_list && nmhdr->code == NM_RCLICK) {
-                LVHITTESTINFO hti = {0};
-                GetCursorPos(&hti.pt);
-                ScreenToClient(state->hwnd_results_list, &hti.pt);
-                ListView_HitTest(state->hwnd_results_list, &hti);
+            if (nmhdr->hwndFrom == state->hwnd_results_list) {
+                if (nmhdr->code == NM_RCLICK) {
+                    LVHITTESTINFO hti = {0};
+                    GetCursorPos(&hti.pt);
+                    ScreenToClient(state->hwnd_results_list, &hti.pt);
+                    ListView_HitTest(state->hwnd_results_list, &hti);
 
-                int clicked_item = -1;
-                if (hti.flags & LVHT_ONITEM) {
-                    clicked_item = hti.iItem;
-                } else {
-                    clicked_item = ListView_GetNextItem(state->hwnd_results_list, -1, LVNI_SELECTED);
+                    int clicked_item = -1;
+                    if (hti.flags & LVHT_ONITEM) {
+                        clicked_item = hti.iItem;
+                    } else {
+                        clicked_item = ListView_GetNextItem(state->hwnd_results_list, -1, LVNI_SELECTED);
+                    }
+
+                    if (clicked_item != -1) {
+                        HMENU hmenu = CreatePopupMenu();
+                        if (hmenu != NULL) {
+                            AppendMenuW(hmenu, MF_STRING, ID_POPUP_OPEN_LOCATION, L"Open File Location");
+                            AppendMenuW(hmenu, MF_STRING, ID_POPUP_COPY_PATH, L"Copy Path");
+
+                            POINT pt;
+                            GetCursorPos(&pt);
+                            state->last_context_item = clicked_item;
+
+                            TrackPopupMenu(hmenu, TPM_RIGHTBUTTON | TPM_LEFTALIGN, pt.x, pt.y, 0, hwnd, NULL);
+                            DestroyMenu(hmenu);
+                        }
+                    }
                 }
+                else if (nmhdr->code == NM_RETURN || nmhdr->code == NM_DBLCLK) {
+                    int selected_item = -1;
+                    if (nmhdr->code == NM_DBLCLK) {
+                        LPNMITEMACTIVATE nmia = (LPNMITEMACTIVATE)lParam;
+                        selected_item = nmia->iItem;
+                    } else {
+                        selected_item = ListView_GetNextItem(state->hwnd_results_list, -1, LVNI_SELECTED);
+                    }
 
-                if (clicked_item != -1) {
-                    HMENU hmenu = CreatePopupMenu();
-                    if (hmenu != NULL) {
-                        AppendMenuW(hmenu, MF_STRING, ID_POPUP_OPEN_LOCATION, L"Open File Location");
-                        AppendMenuW(hmenu, MF_STRING, ID_POPUP_COPY_PATH, L"Copy Path");
+                    if (selected_item != -1 && selected_item < (int)search_results_count(&state->search_results)) {
+                        const SearchResult *res = search_results_get(&state->search_results, selected_item);
+                        if (res != NULL) {
+                            wchar_t path[MAX_PATH] = {0};
+                            if (res->is_directory) {
+                                index_get_dir_path(&state->index, res->index_id, path, MAX_PATH);
+                            } else {
+                                index_get_file_path(&state->index, res->index_id, path, MAX_PATH);
+                            }
 
-                        POINT pt;
-                        GetCursorPos(&pt);
-                        state->last_context_item = clicked_item;
-
-                        TrackPopupMenu(hmenu, TPM_RIGHTBUTTON | TPM_LEFTALIGN, pt.x, pt.y, 0, hwnd, NULL);
-                        DestroyMenu(hmenu);
+                            wchar_t args[MAX_PATH + 64];
+                            swprintf_s(args, MAX_PATH + 64, L"/select,\"%s\"", path);
+                            ShellExecuteW(NULL, L"open", L"explorer.exe", args, NULL, SW_SHOWNORMAL);
+                        }
                     }
                 }
             }
@@ -515,7 +581,53 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             break;
         }
 
+        case WM_CLOSE: {
+            ShowWindow(hwnd, SW_HIDE);
+            return 0;
+        }
+
+        case WM_HOTKEY: {
+            if (wParam == 1) {
+                if (IsWindowVisible(hwnd) && (GetForegroundWindow() == hwnd)) {
+                    ShowWindow(hwnd, SW_HIDE);
+                } else {
+                    ShowWindow(hwnd, SW_SHOW);
+                    ShowWindow(hwnd, SW_RESTORE);
+                    SetForegroundWindow(hwnd);
+                    SetActiveWindow(hwnd);
+                    SetFocus(state->hwnd_search_edit);
+                    SendMessageW(state->hwnd_search_edit, EM_SETSEL, 0, -1);
+                }
+            }
+            break;
+        }
+
+        case WM_USER_TRAY_ICON: {
+            if (lParam == WM_RBUTTONUP) {
+                POINT pt;
+                GetCursorPos(&pt);
+                HMENU hmenu = CreatePopupMenu();
+                if (hmenu != NULL) {
+                    AppendMenuW(hmenu, MF_STRING, ID_TRAY_SHOW, L"Show Achilles-Search");
+                    AppendMenuW(hmenu, MF_STRING, ID_TRAY_EXIT, L"Exit");
+
+                    SetForegroundWindow(hwnd);
+                    TrackPopupMenu(hmenu, TPM_RIGHTBUTTON | TPM_LEFTALIGN, pt.x, pt.y, 0, hwnd, NULL);
+                    DestroyMenu(hmenu);
+                }
+            }
+            else if (lParam == WM_LBUTTONDBLCLK) {
+                ShowWindow(hwnd, SW_SHOW);
+                ShowWindow(hwnd, SW_RESTORE);
+                SetForegroundWindow(hwnd);
+                SetFocus(state->hwnd_search_edit);
+            }
+            break;
+        }
+
         case WM_DESTROY: {
+            UnregisterHotKey(hwnd, 1);
+            remove_tray_icon(hwnd);
             if (state != NULL) {
                 index_destroy(&state->index);
                 search_results_destroy(&state->search_results);

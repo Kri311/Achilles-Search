@@ -19,7 +19,7 @@ static wchar_t* path_join_w(const wchar_t *dir, const wchar_t *name) {
     usize name_len = wcslen(name);
 
     bool has_sep = (dir_len > 0 && dir[dir_len - 1] == L'\\');
-    usize total_len = dir_len + (has_sep ? 0 : 1) + name_len + 1;
+    usize total_len = dir_len + (has_sep  0 : 1) + name_len + 1;
 
     if (total_len < dir_len) return NULL;
 

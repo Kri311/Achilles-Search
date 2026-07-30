@@ -18,13 +18,13 @@
  * --------------------------------------------------------------------------
  * Formats the current local time as "YYYY-MM-DD HH:MM:SS".
  *
- * WHY localtime_s()?
+ * WHY localtime_s()
  *   The standard localtime() returns a pointer to a STATIC internal buffer.
  *   If two threads call localtime() simultaneously, they overwrite each
  *   other's data → race condition. localtime_s() (MSVC) writes to a
  *   caller-provided struct, making it thread-safe.
  *
- * WHY snprintf()?
+ * WHY snprintf()
  *   snprintf() guarantees null-termination and prevents buffer overflows,
  *   unlike sprintf(). Always use snprintf() in production code.
  * -------------------------------------------------------------------------- */

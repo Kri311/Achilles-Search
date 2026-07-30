@@ -31,7 +31,7 @@
 
 /* Compute the byte offset of element at 'index' within the buffer.
  *
- * WHY a helper?
+ * WHY a helper
  *   The expression (char*)data + index * element_size appears in multiple
  *   places. Centralizing it prevents copy-paste errors and makes the
  *   arithmetic explicit.
@@ -71,7 +71,7 @@ static AchErrorCode vector_grow(Vector *vec, usize min_capacity) {
         new_capacity = min_capacity;
     }
 
-    /* Safety check: would new_capacity * element_size overflow? */
+    /* Safety check: would new_capacity * element_size overflow */
     if (!vector_capacity_is_safe(new_capacity, vec->element_size)) {
         return ACH_ERROR_OUT_OF_MEMORY;
     }
@@ -246,11 +246,11 @@ AchErrorCode vector_set(Vector *vec, usize index, const void *element) {
 /* ---- Size Management ---------------------------------------------------- */
 
 usize vector_length(const Vector *vec) {
-    return (vec != NULL) ? vec->length : 0;
+    return (vec != NULL)  vec->length : 0;
 }
 
 usize vector_capacity(const Vector *vec) {
-    return (vec != NULL) ? vec->capacity : 0;
+    return (vec != NULL)  vec->capacity : 0;
 }
 
 bool vector_is_empty(const Vector *vec) {

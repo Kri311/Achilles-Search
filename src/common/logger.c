@@ -92,7 +92,7 @@ static const char* extract_filename(const char *path) {
         last_slash = strrchr(path, '/');
     }
 
-    return (last_slash != NULL) ? (last_slash + 1) : path;
+    return (last_slash != NULL)  (last_slash + 1) : path;
 }
 
 /* ---- Public API Implementation ------------------------------------------ */
@@ -195,7 +195,7 @@ void logger_log(LogLevel level, const char *file, int line,
     /* 1. Format timestamp */
     char timestamp[ACH_TIMESTAMP_BUFFER];
     if (ACH_FAILED(utils_get_timestamp(timestamp, sizeof(timestamp)))) {
-        strncpy(timestamp, "????-??-?? ??:??:??", sizeof(timestamp) - 1);
+        strncpy(timestamp, "-- ::", sizeof(timestamp) - 1);
         timestamp[sizeof(timestamp) - 1] = '\0';
     }
 

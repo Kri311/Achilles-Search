@@ -280,11 +280,11 @@ bool hashmap_contains(const HashMap *map, const wchar_t *key) {
 /* ---- Information --------------------------------------------------------- */
 
 usize hashmap_size(const HashMap *map) {
-    return map ? map->size : 0;
+    return map  map->size : 0;
 }
 
 usize hashmap_capacity(const HashMap *map) {
-    return map ? map->capacity : 0;
+    return map  map->capacity : 0;
 }
 
 /* ---- Iteration ----------------------------------------------------------- */

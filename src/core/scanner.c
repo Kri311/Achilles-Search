@@ -71,7 +71,7 @@ static wchar_t* path_join_w(const wchar_t *dir, const wchar_t *name) {
     bool has_sep = (dir_len > 0 && dir[dir_len - 1] == L'\\');
 
     /* Total: dir + optional separator + name + null terminator */
-    usize total_len = dir_len + (has_sep ? 0 : 1) + name_len + 1;
+    usize total_len = dir_len + (has_sep  0 : 1) + name_len + 1;
 
     /* Overflow check */
     if (total_len < dir_len) return NULL;  /* Would overflow */
@@ -177,7 +177,7 @@ static void free_dir_stack(Vector *dir_stack) {
 
 /* Get current time in milliseconds using QueryPerformanceCounter.
  *
- * WHY NOT clock() or GetTickCount64()?
+ * WHY NOT clock() or GetTickCount64()
  *   - clock() measures CPU time, not wall time (wrong for I/O-bound work)
  *   - GetTickCount64() has ~15ms resolution (too coarse for fast scans)
  *   - QueryPerformanceCounter has sub-microsecond resolution
@@ -375,7 +375,7 @@ AchErrorCode scanner_scan(Scanner *scanner, const ScanConfig *config) {
             bool is_dir = (attrs & FILE_ATTRIBUTE_DIRECTORY) != 0;
             FileInfo info = {
                 .path          = full_path,  /* Ownership transferred to results */
-                .file_size     = is_dir ? 0 : make_file_size(
+                .file_size     = is_dir  0 : make_file_size(
                                      find_data.nFileSizeHigh,
                                      find_data.nFileSizeLow),
                 .last_modified = filetime_to_u64(find_data.ftLastWriteTime),

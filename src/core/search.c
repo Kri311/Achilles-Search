@@ -190,7 +190,7 @@ void search_results_clear(SearchEngineResults *results) {
 }
 
 usize search_results_count(const SearchEngineResults *results) {
-    return (results != NULL) ? vector_length(&results->items) : 0;
+    return (results != NULL)  vector_length(&results->items) : 0;
 }
 
 const SearchResult* search_results_get(const SearchEngineResults *results, usize index) {
@@ -295,10 +295,10 @@ AchErrorCode search_execute(const Index *index, const wchar_t *query, const Sear
         thread_params[i].config = active_config;
 
         thread_params[i].file_start = i * files_per_thread;
-        thread_params[i].file_end = (i == thread_count - 1) ? total_files : (i + 1) * files_per_thread;
+        thread_params[i].file_end = (i == thread_count - 1)  total_files : (i + 1) * files_per_thread;
 
         thread_params[i].dir_start = i * dirs_per_thread;
-        thread_params[i].dir_end = (i == thread_count - 1) ? total_dirs : (i + 1) * dirs_per_thread;
+        thread_params[i].dir_end = (i == thread_count - 1)  total_dirs : (i + 1) * dirs_per_thread;
 
         threads[i] = CreateThread(
             NULL,
