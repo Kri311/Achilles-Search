@@ -7,7 +7,7 @@
  * Each test function returns true on success. The main function runs all
  * tests and reports results.
  *
- * WHY NOT USE A TESTING FRAMEWORK?
+ * WHY NOT USE A TESTING FRAMEWORK
  *   We avoid external dependencies in Phase 0-2. A simple assert-based
  *   harness is sufficient. We can adopt Unity or CMocka later if needed.
  * ========================================================================== */
@@ -482,7 +482,7 @@ int main(void) {
     }
     printf("------------------------------------------------------------\n\n");
 
-    int exit_code = (tests_passed == tests_run) ? 0 : 1;
+    int exit_code = (tests_passed == tests_run)  0 : 1;
 
     if (utils_should_pause_on_exit()) {
         printf("\nPress Enter to exit...");
