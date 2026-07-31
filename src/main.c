@@ -646,6 +646,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 /* ---- GUI Entry Point ---------------------------------------------------- */
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) {
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+
     /* Initialize Common Controls */
     INITCOMMONCONTROLSEX icex = {0};
     icex.dwSize = sizeof(icex);
@@ -698,6 +701,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    (void)hPrevInstance;
     (void)lpCmdLine;
     return wWinMain(hInstance, hPrevInstance, NULL, nCmdShow);
 }

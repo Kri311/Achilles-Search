@@ -187,7 +187,8 @@ static bool test_corrupt_headers(void) {
     /* 2. Write file with bad version */
     f = _wfopen(db_path, L"wb");
     ASSERT(f != NULL);
-    char good_magic[4] = ACH_DB_MAGIC;
+    char good_magic[4];
+    memcpy(good_magic, ACH_DB_MAGIC, 4);
     u32 bad_ver = 9999;
     fwrite(good_magic, 1, 4, f);
     fwrite(&bad_ver, sizeof(u32), 1, f);
@@ -212,7 +213,8 @@ static bool test_truncated_file(void) {
     /* Write header claiming 5 directories, but write none */
     FILE *f = _wfopen(db_path, L"wb");
     ASSERT(f != NULL);
-    char magic[4] = ACH_DB_MAGIC;
+    char magic[4];
+    memcpy(magic, ACH_DB_MAGIC, 4);
     u32 ver = ACH_DB_VERSION;
     u32 dirs = 5;
     u32 files = 0;

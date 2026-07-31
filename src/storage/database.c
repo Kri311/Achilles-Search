@@ -19,7 +19,8 @@ AchErrorCode db_save(const Index *index, const wchar_t *file_path) {
         return ACH_ERROR_FILE_OPEN_FAILED;
     }
 
-    char magic[4] = ACH_DB_MAGIC;
+    char magic[4];
+    memcpy(magic, ACH_DB_MAGIC, 4);
     u32 version = ACH_DB_VERSION;
     u32 dir_count = (u32)vector_length(&index->dirs);
     u32 file_count = (u32)vector_length(&index->files);
