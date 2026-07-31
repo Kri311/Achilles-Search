@@ -34,7 +34,7 @@ static void split_path(const wchar_t *path, wchar_t *parent, usize parent_len, w
         /* The path starts with a backslash (e.g. "\file.txt") */
         wcsncpy(parent, L"\\", parent_len);
     } else {
-        usize to_copy = (parent_chars < parent_len - 1)  parent_chars : (parent_len - 1);
+        usize to_copy = (parent_chars < parent_len - 1) ? parent_chars : (parent_len - 1);
         wcsncpy(parent, path, to_copy);
         parent[to_copy] = L'\0';
     }
@@ -90,7 +90,7 @@ static AchErrorCode get_or_create_dir(Index *index, HashMap *dir_map, const wcha
 
     /* 3. Insert new directory entry */
     IndexDir new_dir;
-    new_dir.name = _wcsdup(name[0] == L'\0'  dir_path : name);
+    new_dir.name = _wcsdup(name[0] == L'\0' ? dir_path : name);
     if (new_dir.name == NULL) {
         return ACH_ERROR_OUT_OF_MEMORY;
     }
@@ -353,9 +353,9 @@ AchErrorCode index_get_file_path(const Index *index, u32 file_idx, wchar_t *out_
 /* ---- Information --------------------------------------------------------- */
 
 usize index_file_count(const Index *index) {
-    return index  vector_length(&index->files) : 0;
+    return index ? vector_length(&index->files) : 0;
 }
 
 usize index_dir_count(const Index *index) {
-    return index  vector_length(&index->dirs) : 0;
+    return index ? vector_length(&index->dirs) : 0;
 }

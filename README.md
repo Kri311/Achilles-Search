@@ -15,14 +15,12 @@ A blazing-fast, native Windows desktop file search engine written in portable C1
 
 ## Installation
 
-You do not need to build the project yourself to use it! We provide a pre-compiled installer for Windows.
+You do not need to build the project yourself to use it! We provide a pre-compiled, portable executable for Windows.
 
 1. Go to the **Releases** page of this repository.
-2. Download the latest `AchillesSearch-x.x.x-win64.exe` installer.
-3. Run the installer and follow the setup wizard.
-4. Launch the app from your Start Menu!
-
-*(A portable `.zip` version is also available in the releases).*
+2. Download `AchillesSearch.exe` (or the portable `.zip` version).
+3. If you downloaded the `.zip`, simply extract it to find the `.exe` inside.
+4. Launch the app instantly—no installation required!
 
 ## Usage Guide
 

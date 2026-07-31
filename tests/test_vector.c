@@ -482,7 +482,7 @@ int main(void) {
     }
     printf("------------------------------------------------------------\n\n");
 
-    int exit_code = (tests_passed == tests_run)  0 : 1;
+    int exit_code = (tests_passed == tests_run) ? 0 : 1;
 
     if (utils_should_pause_on_exit()) {
         printf("\nPress Enter to exit...");

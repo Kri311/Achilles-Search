@@ -246,11 +246,11 @@ AchErrorCode vector_set(Vector *vec, usize index, const void *element) {
 /* ---- Size Management ---------------------------------------------------- */
 
 usize vector_length(const Vector *vec) {
-    return (vec != NULL)  vec->length : 0;
+    return (vec != NULL) ? vec->length : 0;
 }
 
 usize vector_capacity(const Vector *vec) {
-    return (vec != NULL)  vec->capacity : 0;
+    return (vec != NULL) ? vec->capacity : 0;
 }
 
 bool vector_is_empty(const Vector *vec) {

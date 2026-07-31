@@ -235,7 +235,7 @@ static void populate_listview(AppState *state) {
         lvi.pszText = name;
         ListView_InsertItem(state->hwnd_results_list, &lvi);
 
-        ListView_SetItemText(state->hwnd_results_list, i, 1, res->is_directory  L"Directory" : L"File");
+        ListView_SetItemText(state->hwnd_results_list, i, 1, res->is_directory ? L"Directory" : L"File");
         ListView_SetItemText(state->hwnd_results_list, i, 2, path);
     }
 
