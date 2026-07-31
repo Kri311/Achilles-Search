@@ -149,7 +149,7 @@ AchErrorCode content_index_add_file(ContentIndex *cindex, u32 file_id, const wch
     free(buf);
 
     if (wbuf == NULL) {
-        return wlen > 0  ACH_ERROR_OUT_OF_MEMORY : ACH_SUCCESS;
+        return wlen > 0 ? ACH_ERROR_OUT_OF_MEMORY : ACH_SUCCESS;
     }
 
     /* Tokenize wide string buffer */

@@ -92,7 +92,7 @@ static const char* extract_filename(const char *path) {
         last_slash = strrchr(path, '/');
     }
 
-    return (last_slash != NULL)  (last_slash + 1) : path;
+    return (last_slash != NULL) ? (last_slash + 1) : path;
 }
 
 /* ---- Public API Implementation ------------------------------------------ */
