@@ -1,4 +1,4 @@
-﻿# Achilles-Search
+# Achilles-Search
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows-lightgray.svg)](#)
@@ -40,7 +40,7 @@ If you want to contribute or build the project from source, you will need **CMak
 
 ```bash
 # Clone the repository
-git clone https://github.com/USERNAME/Achilles-Search.git
+git clone https://github.com/Kri311/Achilles-Search.git
 cd Achilles-Search
 
 # Configure the project
@@ -51,3 +51,19 @@ cmake --build build --config Release
 ```
 
 The compiled binary will be located in `build/bin/AchillesSearch.exe`.
+
+## Architecture & Module Map
+
+Achilles-Search is designed with a highly modular and cache-friendly architecture to achieve its blistering search speeds. It avoids bloated abstractions in favor of direct, zero-overhead C data structures.
+
+| Module | Header | Source | Functionality |
+| :--- | :--- | :--- | :--- |
+| **Common** | `include/common/` | `src/common/` | Logger, custom type maps, error flags, macros |
+| **Data Structures** | `include/data/` | `src/data/` | Cache-friendly dynamic `Vector`, linear-probing `HashMap` |
+| **Scanner** | `include/core/scanner.h` | `src/core/scanner.c` | Recursive Windows DFS directory scanner |
+| **Indexer** | `include/core/index.h` | `src/core/index.c` | Prefix-path compressed index constructor |
+| **Database** | `include/storage/database.h` | `src/storage/database.c` | Custom binary serializer/deserializer |
+| **Search Engine** | `include/core/search.h` | `src/core/search.c` | Multi-threaded parallel file matcher |
+| **Content Index**| `include/core/content_index.h` | `src/core/content_index.c` | Inverted word indexer for file content search |
+| **Monitor** | `include/core/monitor.h` | `src/core/monitor.c` | Asynchronous overlapped directory watcher |
+| **GUI** | N/A | `src/main.c` | Responsive native Win32 window and event thread |

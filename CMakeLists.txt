@@ -253,6 +253,6 @@ set(CPACK_NSIS_DELETE_ICONS_EXTRA "
 ")
 
 install(TARGETS AchillesSearch DESTINATION bin)
-install(FILES docs/phase11_release.md DESTINATION docs)
+install(FILES README.md DESTINATION .)
 
 include(CPack)
