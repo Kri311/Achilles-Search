@@ -13,13 +13,39 @@ A blazing-fast, native Windows desktop file search engine built in pure C17. Ind
 
 Achilles-Search is a lightweight desktop search tool that lets you find any file on your computer almost instantly. Unlike the built-in Windows search, Achilles-Search builds its own high-performance in-memory index of your filesystem, so searches return results in real-time as you type each character.
 
+<p align="center">
+  <img src="docs/images/file_enter_edit.png" alt="Achilles-Search in action" width="700"/>
+</p>
+
 It runs as a native Windows application with no frameworks, no runtimes, and no dependencies. Just a single `.exe` that sits in your system tray and is always one hotkey away.
 
 ## How It Works
 
 1. **Scan** - You pick a directory and click **Index**. A background worker thread recursively scans every file and folder using the Windows API, building a compressed in-memory index.
+
+   <p align="center">
+     <img src="docs/images/base_edit.png" alt="Step 1 - Browse and select a directory" width="600"/>
+   </p>
+
+   <p align="center">
+     <img src="docs/images/base_index_edit.png" alt="Step 1 - Indexing complete" width="600"/>
+   </p>
+
 2. **Search** - As you type in the search box, a multi-threaded parallel matcher instantly filters through the entire index and displays matching filenames and paths in real-time.
+
+   <p align="center">
+     <img src="docs/images/file_enter_edit.png" alt="Step 2 - Real-time search results" width="600"/>
+   </p>
+
 3. **Interact** - Double-click any result to reveal it in Windows Explorer, or right-click to copy its full path to your clipboard.
+
+   <p align="center">
+     <img src="docs/images/file_right_click_edit.png" alt="Step 3 - Right-click context menu" width="600"/>
+   </p>
+
+   <p align="center">
+     <img src="docs/images/open_file_location_edit.png" alt="Step 3 - File opened in Explorer" width="600"/>
+   </p>
 
 The application lives in your system tray. Press **Alt + Shift + Space** from anywhere on your desktop to instantly summon the search window.
 
